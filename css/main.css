@@ -1,0 +1,100 @@
+.input {
+  display: block;
+  width: 800px;
+  height: 300px;
+  margin: 0 auto 10px;
+  padding: 10px;
+  font-size: 18px;
+  color: #444;
+}
+
+.keyboard {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 5px 0;
+  background: #1a1a1a;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  user-select: none;
+  transition: bottom 0.4s;
+}
+/* 
+.keyboard-hidden {
+  bottom: -100%;
+} */
+
+.keyboard--keys {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1300px;
+  text-align: center;
+}
+
+.keyboard--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: -2px;
+  margin-right: -2px;
+}
+
+.keyboard--key {
+  height: 45px;
+  flex-basis: 45px;
+  margin: 2px;
+  flex-shrink: 1;
+  flex-grow: 3;
+  border-radius: 4px;
+  border: none;
+  background: #333333;
+  color: #ffffff;
+  font-size: 1.05rem;
+  outline: none;
+  cursor: pointer;
+  vertical-align: top;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  user-select: none;
+}
+
+.keyboard--key:hover{
+  background: #e5e5e5;
+  color: #1d1d1d;
+}
+
+.keyboard--key:active {
+  background: #0076d7;
+}
+
+.keyboard--key-wide {
+  flex-grow: 5;
+}
+
+.keyboard--key-wider {
+  flex-grow: 8;
+}
+
+.keyboard--key-extra_wide {
+  flex-grow: 18;
+}
+
+/* .keyboard--key-activatable::after {
+  content: '';
+  top: 10px;
+  right: 10px;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+} */
+
+.keyboard--key-dark {
+  background: #2f2f2f59;
+}
+
+.keyboard--key-active {
+  background-color: #0076d7;
+}
