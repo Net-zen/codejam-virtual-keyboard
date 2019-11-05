@@ -50,7 +50,7 @@ const Keyboard = {
       {shifted_ru: 'Л', shifted_en: 'K', keyCode: 75, en: 'k', ru:'л', width: 1, dark: 0},
       {shifted_ru: 'Д', shifted_en: 'L', keyCode: 76, en: 'l', ru:'д', width: 1, dark: 0},
       {shifted_ru: 'Ж', shifted_en: ':', keyCode: 186, en: ';', ru:'ж', width: 1, dark: 0},
-      {shifted_ru: 'Э', shifted_en: '"', keyCode: 222, en: "'", ru:'э', width: 1, dark: 0},
+      {shifted_ru: 'Э', shifted_en: '"', keyCode: 222, en: '\'', ru:'э', width: 1, dark: 0},
       {keyCode: 13, value: '\n', title: 'Enter', width: 3, dark: 1, lineBreak: true},
       {keyCode: 16, code: 'ShiftLeft', title: 'Shift', width: 3, dark: 1, extra: true},
       {shifted_ru: 'Я', shifted_en: 'Z', keyCode: 90, en: 'z', ru:'я', width: 1, dark: 0},
@@ -64,13 +64,13 @@ const Keyboard = {
       {shifted_ru: 'Ю', shifted_en: '>', keyCode: 190, en: '.', ru:'ю', width: 1, dark: 0},
       {shifted_ru: '?', shifted_en: ',', keyCode: 191, en: '/', ru:'.', width: 1, dark: 0},
       {keyCode: 38, value: '↑', title: '↑', width: 1, dark: 1},
-      {keyCode: 16, code: 'ShiftRight', title: 'Shift', width: 2, dark: 1, extra: 16, lineBreak: true},
+      {keyCode: 16, code: 'ShiftRight', title: 'Shift', width: 2, dark: 1, extra: true, lineBreak: true},
       {keyCode: 17, code: 'ControlLeft', title: 'Ctrl', width: 1, dark: 1, extra: true},
       {keyCode: 91, code: 'MetaLeft', title: 'Win', width: 1, dark: 1},
       {keyCode: 18, code: 'AltLeft', title: 'Alt', width: 1, dark: 1, extra: true},
       {keyCode: 32, value: ' ', code: 'Space', title: '', width: 4, dark: 1},
-      {keyCode: 18, code: 'AltRight', title: 'Alt', width: 1, dark: 1, extra: 18},
-      {keyCode: 17, code: 'ControlRight', title: 'Ctrl', width: 1, dark: 1, extra: 17},
+      {keyCode: 18, code: 'AltRight', title: 'Alt', width: 1, dark: 1, extra: true},
+      {keyCode: 17, code: 'ControlRight', title: 'Ctrl', width: 1, dark: 1, extra: true},
       {keyCode: 37, value: '←', title: '←', width: 1, dark: 1},
       {keyCode: 40, value: '↓', title: '↓', width: 1, dark: 1},
       {keyCode: 39, value: '→', title: '→', width: 1, dark: 1},
@@ -78,7 +78,7 @@ const Keyboard = {
   },
 
   init() {
-    this.lang = window.localStorage.getItem('lang') || 'ru';
+    this.properties.lang = localStorage.getItem('lang') || 'ru';
     this.elements.main = document.createElement('div');
     this.elements.keysContainer = document.createElement('div');
 
@@ -93,6 +93,13 @@ const Keyboard = {
     document.body.appendChild(this.elements.input);
     this.elements.main.appendChild(this.elements.keysContainer);
     document.body.appendChild(this.elements.main);
+
+    window.addEventListener('keydown', evt => {
+      this.onKeyDown(evt);
+    });
+    window.addEventListener('keyup', evt => {
+      this.onKeyUp(evt);
+    });
   },
 
   _createKeys() {
@@ -104,11 +111,8 @@ const Keyboard = {
 
     this.properties.keyLayout.forEach(key => {
       const keyElement = document.createElement('button');
-
-      // Add attributes/classes
       keyElement.setAttribute('type', 'button');
       keyElement.classList.add('keyboard--key');
-
       if (key.dark) keyElement.classList.add('keyboard--key-dark');
 
       switch (key.width) {
@@ -122,79 +126,21 @@ const Keyboard = {
           keyElement.classList.add('keyboard--key-extra_wide');
           break;
       }
+      if (key[this.properties.lang]){
+        keyElement.textContent = key[this.properties.lang];
+      } else if (key.value && key.value !== '\n' && key.value !== '\t') {
+        keyElement.textContent = key.value;
+      } else {
+        keyElement.textContent = key.title;
+      }
 
-//       switch (key.keyCode) {
-//           case 8:
-//               keyElement.textContent = key.value;
-// /* 
-//               keyElement.addEventListener('click', () => {
-//                   this.properties.value = this.properties.value.substring(0, this.properties.value.length - 1);
-//                   this._triggerEvent('oninput');
-//               }); */
-
-//               break;
-
-//           case 20:
-//               keyElement.textContent = key.title;
-
-//               keyElement.addEventListener('click', () => {
-//                   this._toggleCapsLock();
-//                   keyElement.classList.toggle('keyboard--key-active', this.properties.capsLock);
-//               });
-
-//               break;
-
-//           case 13:
-//               keyElement.textContent = key.title;
-
-//               keyElement.addEventListener('click', () => {
-//                   this.properties.value += '\n';
-//                   this._triggerEvent('oninput');
-//               });
-
-//               break;
-
-//           case 32:
-//               keyElement.textContent = key.title;
-
-//               keyElement.addEventListener('click', () => {
-//                   this.properties.value += ' ';
-//                   this._triggerEvent('oninput');
-//               });
-
-//               break;
-//           case 16:
-//               keyElement.textContent = key.title;
-
-//               keyElement.addEventListener('click', () => {
-//                   // this.properties.value += '\n';
-//                   this._triggerEvent('oninput');
-//               });
-
-//               break;
-
-//           default:
-            if (key[this.lang]){
-              keyElement.textContent = key[this.lang];
-            } else if (key.value && key.value !== '\n' && key.value !== '\t') {
-              keyElement.textContent = key.value;
-            } else {
-              keyElement.textContent = key.title;
-            }
-
-              keyElement.addEventListener('mousedown', (evt) => {
-                console.log('evt: ', evt);
-                this.properties.keyLayout.forEach(key => {
-                  if (key.domElement === evt.target) {
-                    this.onMouseDown(key, evt);
-                  }
-                });
-              // this.properties.value += this.properties.capsLock ? key.toUpperCase() : key.toLowerCase();
-                
-              });
-
-              // break;
-      // }
+      keyElement.addEventListener('click', (evt) => {
+        this.properties.keyLayout.forEach(key => {
+          if (key.domElement === evt.target) {
+            this.onClick(key, evt);
+          }
+        });                
+      });
       
       keyboardRow.appendChild(keyElement)
       key.domElement = keyElement;
@@ -215,33 +161,60 @@ const Keyboard = {
     this.properties.capsLock = !this.properties.capsLock;
 
     this.properties.keyLayout.forEach(key => {
-      if (key.ru || key.en) {
-        key.domElement.textContent = this.properties.capsLock ? key.domElement.textContent.toUpperCase() : key.domElement.textContent.toLowerCase();
-      }
       if (key.keyCode === 20) {
         key.domElement.classList.toggle('keyboard--key-active');
       }
     });
-    
+    this.redraw();
   },
 
-  onMouseDown(key, evt) {
-    console.log('evt: ', evt);
-    this.elements.input.focus();
-    console.log('key: ', key);
-    console.log('key.keyCode: ', key.keyCode);
-
+  onClick(key, evt) {
     if (key.keyCode === 20) {
       this._toggleCapsLock();
     }
-    let value = key[this.lang] || key.value;
+
+    this.print(key, evt);
+  },
+
+  onKeyDown(evt) {
+    evt.preventDefault();
+    const element = this.getDomElementToHighlight(evt);
+    if (evt.keyCode === 20) {
+      this._toggleCapsLock();
+    } else {
+      element.domElement.classList.add('keyboard--key-active');
+    }
+    if (evt.keyCode === 18 && evt.ctrlKey) {
+      this.switchLang();
+    }
+    if (evt.keyCode === 16) {
+      this.redraw('shiftOn');
+    }
+    this.print(element, evt);
+  },
+
+
+  onKeyUp(evt) {
+    evt.preventDefault();
+    const element = this.getDomElementToHighlight(evt);
+    if (evt.keyCode !== 20) {
+      element.domElement.classList.remove('keyboard--key-active');
+    }
+    if (evt.keyCode === 16) {
+      this.redraw('shiftOff');
+    }
+  },
+
+  print(key, evt) {
+    this.elements.input.focus();
+    let value = key[this.properties.lang] || key.value;
     if (value) {
       if (this.properties.capsLock) {
           value = value.toUpperCase();
       }
       if (evt.shiftKey) {
-          if (key['shifted_' + this.lang] || key['shifted']) {
-              value = key['shifted_' + this.lang] || key['shifted'];
+          if (key['shifted_' + this.properties.lang] || key['shifted']) {
+              value = key['shifted_' + this.properties.lang] || key['shifted'];
           }
           value = this.properties.capsLock ? value.toLowerCase() : value.toUpperCase();
         }
@@ -250,11 +223,54 @@ const Keyboard = {
     if (key.keyCode === 8) {
       this.elements.input.value = this.elements.input.value.substring(0, this.elements.input.value.length - 1);
     } 
+  },
 
-    
-    this.elements.input.focus();
+  getDomElementToHighlight(evt) {
+    let element;
+      this.properties.keyLayout.forEach(key => {
+        if (key.keyCode === evt.keyCode) {
+          if (key.extra) {
+            this.properties.keyLayout.forEach(extraKey => {
+              if ((extraKey.code === evt.code)) {
+                element = extraKey;
+              }
+            })
+          } else {
+            element = key;
+          }
+        }
+      });
+      return element
+  },
+
+  switchLang() {
+    this.properties.lang = (this.properties.lang === 'ru') ? 'en' : 'ru';
+    if (localStorage.getItem('lang')) {
+      localStorage.removeItem('lang');
+    }
+    localStorage.setItem('lang', this.properties.lang);
+    this.redraw('lang');
+  },
+
+  redraw(reason) {
+    this.properties.keyLayout.forEach(key => {
+      if (reason === 'shiftOn') {
+        if (key['shifted_' + this.properties.lang] || key.shifted){
+          key.domElement.textContent = key['shifted_' + this.properties.lang] || key.shifted;
+        } 
+      } else if (reason === 'shiftOff') {
+        if (key['shifted_' + this.properties.lang] || key.shifted){
+          key.domElement.textContent = key[this.properties.lang] || key.value;
+        } 
+      } else if ('lang') {
+        if (key[this.properties.lang]) {
+          key.domElement.textContent = (this.properties.capsLock) ? key[this.properties.lang].toUpperCase() : key[this.properties.lang];
+        }
+      } else if (key[this.properties.lang]) {
+        key.domElement.textContent = (this.properties.capsLock) ? key.domElement.textContent.toUpperCase() : key.domElement.textContent.toLowerCase();
+      }
+    });
   }
-
 }
 
 
