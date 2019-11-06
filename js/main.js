@@ -447,33 +447,26 @@ const Keyboard = {
   _delete() {
     const input = this.elements.input;
     if (input.selectionStart < input.value.length) {
+      const startPosition = input.selectionStart;
       if (input.selectionStart === input.selectionEnd) {
-        const startPosition = input.selectionStart;
         input.selectionEnd = input.selectionStart + 1;
-        input.value = input.value.slice(0, input.selectionStart) + input.value.slice(input.selectionEnd, input.value.length);
-        input.selectionStart = startPosition;
-        input.selectionEnd = input.selectionStart;
-      } else if (input.selectionStart < input.selectionEnd) {
-        const startPosition = input.selectionStart;
-        input.value = input.value.slice(0, input.selectionStart) + input.value.slice(input.selectionEnd, input.value.length);
-        input.selectionStart = startPosition;
-        input.selectionEnd = input.selectionStart;
       }
+      input.value = input.value.slice(0, input.selectionStart) + input.value.slice(input.selectionEnd, input.value.length);
+      input.selectionStart = startPosition;
+      input.selectionEnd = input.selectionStart;
     }
   },
 
   _backSpace() {
     const input = this.elements.input;
     if (input.selectionEnd > 0) {
+      const startPosition = input.selectionStart;
       if (input.selectionStart === input.selectionEnd) {
-        const startPosition = input.selectionStart;
-        input.selectionEnd = input.selectionStart;
         input.selectionStart = startPosition - 1;
         input.value = input.value.slice(0, input.selectionStart) + input.value.slice(input.selectionEnd, input.value.length);
         input.selectionStart = startPosition - 1;
         input.selectionEnd = input.selectionStart;
       } else if (input.selectionStart < input.selectionEnd) {
-        const startPosition = input.selectionStart;
         input.value = input.value.slice(0, input.selectionStart) + input.value.slice(input.selectionEnd, input.value.length);
         input.selectionStart = startPosition;
         input.selectionEnd = input.selectionStart;

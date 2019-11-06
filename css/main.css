@@ -66,6 +66,7 @@
 
 .keyboard--key:active {
   background: #0076d7;
+  transform: scale(.93);
 }
 
 .keyboard--key-wide {
@@ -86,4 +87,5 @@
 
 .keyboard--key-active {
   background-color: #0076d7;
+  transform: scale(.93);
 }
